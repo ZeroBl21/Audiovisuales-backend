@@ -1,3 +1,6 @@
+import * as dotenv from 'dotenv'
+dotenv.config()
+
 import express, { json, urlencoded } from 'express'
 
 import formRouter from './routes/form.js'
@@ -13,7 +16,7 @@ app.use('/api', formRouter)
 mongoose
   .connect(process.env.MONGODB_URI)
   .then(() => {
-    app.listen(8080, () => {
+    app.listen(port, () => {
       console.log('http://localhost:8080')
     })
   })
