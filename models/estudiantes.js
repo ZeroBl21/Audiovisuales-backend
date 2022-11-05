@@ -1,7 +1,6 @@
 import mongoose, { Schema } from 'mongoose'
 
 const studentSchema = new Schema({
-  _id: false,
   matricula: {
     type: String,
     require: true,
@@ -18,4 +17,4 @@ const studentSchema = new Schema({
   },
 })
 
-export default model = mongoose.model("Estudiantes", studentSchema)
+export default mongoose.model("Estudiantes", studentSchema)

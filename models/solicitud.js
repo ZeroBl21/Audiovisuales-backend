@@ -1,6 +1,6 @@
 import mongoose, { Schema } from 'mongoose'
 
-const reservation = new Schema({
+const formSchema = new Schema({
   fechaDeUso: {
     type: String,
     required: true,
@@ -35,4 +35,4 @@ const reservation = new Schema({
   }
 })
 
-export default model = mongoose.model('Reservas', reservation)
+export default mongoose.model('Solicitudes', formSchema)

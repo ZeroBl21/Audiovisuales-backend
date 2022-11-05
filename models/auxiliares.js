@@ -11,4 +11,4 @@ const assistantSchema = new Schema({
   },
 })
 
-export default model = mongoose.model('Auxiliares', assistantSchema)
+export default mongoose.model('Auxiliares', assistantSchema)

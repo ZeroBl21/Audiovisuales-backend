@@ -1,12 +1,10 @@
 import mongoose, { Schema } from 'mongoose'
 
-const teacher = new Schema({
-  _id: false,
+const teacherSchema = new Schema({
   codigo: {
     type: String,
     require: true,
     unique: true,
-    index: true
   },
   nombre: {
     type: String,
@@ -14,4 +12,4 @@ const teacher = new Schema({
   },
 })
 
-export default model = mongoose.model("Docentes", teacher)
+export default mongoose.model("Docentes", teacherSchema)

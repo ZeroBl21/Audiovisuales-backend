@@ -5,14 +5,14 @@ const inventorySchema = new Schema({
     type: String,
     require: true,
   },
-  estado: {
+  tipo: {
     type: String,
-    default: "Stock"
+    default: "proyector"
   },
   stock: {
-    type: Integer,
+    type: Number,
     default: 0
   }
 })
 
-export default model = mongoose.model("Inventario", inventorySchema)
+export default mongoose.model("Inventario", inventorySchema)

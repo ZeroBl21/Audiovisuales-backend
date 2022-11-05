@@ -1,6 +1,6 @@
 import mongoose, { Schema } from 'mongoose'
 
-const reservation = new Schema({
+const reservationSchema = new Schema({
   idForm: {
     type: Schema.Types.ObjectId,
     ref: 'Form',
@@ -23,4 +23,4 @@ const reservation = new Schema({
   ],
 })
 
-export default model = mongoose.model('Reservas', reservation)
+export default mongoose.model('Reservas', reservationSchema)

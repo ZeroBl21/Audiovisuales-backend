@@ -1,4 +1,4 @@
-import Form from '../models/solicitud'
+import Form from '../models/solicitud.js'
 
 // Example Data
 // let form = [
