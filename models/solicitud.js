@@ -5,7 +5,7 @@ const reservation = new Schema({
     type: String,
     required: true,
   },
-  horaInicial: {
+  horaInicio: {
     type: String,
     required: true,
   },
@@ -18,6 +18,10 @@ const reservation = new Schema({
     required: true,
   },
   curso: {
+    type: String,
+    required: true,
+  },
+  telefono: {
     type: String,
     required: true,
   },

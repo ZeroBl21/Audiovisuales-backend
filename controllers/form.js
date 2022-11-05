@@ -1,116 +1,142 @@
-import { randomUUID } from 'node:crypto'
+import Form from '../models/solicitud'
 
-let form = [
-  {
-    id: '1',
-    fechaDeUso: '2022-10-05',
-    horaInicio: '22:22',
-    horaFinal: '22:22',
-    asignatura: 'aTesting',
-    curso: 'A101',
-    nombreEstudiante: 'estuTesting',
-    matriculaEstudiante: '2190001',
-    correoEstudiante: 'test@test.com',
-    telefonoEstudiante: '0001112222',
-    nombreDocente: 'doceTesting',
-    codigoDocente: 'codocTesting',
-  },
-]
+// Example Data
+// let form = [
+//   {
+//     id: '1',
+//     fechaDeUso: '2022-10-05',
+//     horaInicio: '22:22',
+//     horaFinal: '22:22',
+//     asignatura: 'aTesting',
+//     curso: 'A101',
+//     telefono: "8091112222",
+//     matriculaEstudiante: '2190001',
+//     codigoDocente: '1112223',
+//   },
+// ]
 
-export const getForms = (_, res) => {
-  res.status(200).json({ form })
-}
+export const getForms = async (_, res) => {
+  try {
+    const totalItems = await Form.find().countDocuments()
+    const forms = await Form.find()
+      .populate('codigoDocente')
+      .populate('matriculaEstudiante')
+      .sort({ createdAt: -1 })
 
-export const getForm = (req, res) => {
-  const { formId } = req.params
-
-  const formIndex = form.filter((item) => item.id !== formId)
-
-  res.status(200).json({ formIndex })
-}
-
-export const postForm = (req, res) => {
-  const {
-    fechaDeUso,
-    horaInicio,
-    horaFinal,
-    asignatura,
-    curso,
-    nombreEstudiante,
-    matriculaEstudiante,
-    correoEstudiante,
-    telefonoEstudiante,
-    nombreDocente,
-    codigoDocente,
-  } = req.body
-
-  const newForm = {
-    id: randomUUID(),
-    fechaDeUso,
-    horaInicio,
-    horaFinal,
-    asignatura,
-    curso,
-    nombreEstudiante,
-    matriculaEstudiante,
-    correoEstudiante,
-    telefonoEstudiante,
-    nombreDocente,
-    codigoDocente,
-  }
-
-  form.push(newForm)
-
-  res.status(201).json({ message: 'The Form has been added' })
-}
-
-export const updateForm = (req, res) => {
-  const { formId } = req.params
-
-  const {
-    fechaDeUso,
-    horaInicio,
-    horaFinal,
-    asignatura,
-    curso,
-    nombreEstudiante,
-    matriculaEstudiante,
-    correoEstudiante,
-    telefonoEstudiante,
-    nombreDocente,
-    codigoDocente,
-  } = req.body
-
-  const formIndex = form.findIndex((item) => item.id === formId)
-
-  if (formIndex >= 0) {
-    form[formIndex] = {
-      id: form[formIndex].id,
-      fechaDeUso,
-      horaInicio,
-      horaFinal,
-      asignatura,
-      curso,
-      nombreEstudiante,
-      matriculaEstudiante,
-      correoEstudiante,
-      telefonoEstudiante,
-      nombreDocente,
-      codigoDocente,
+    if (!forms) {
+      throw handleError(404, 'Error fetching the forms')
     }
 
-    return res.status(200).json({
-      message: 'Todo has been updated',
-      form,
+    res.status(200).json({
+      message: 'Fetched forms successfully',
+      forms,
+      totalItems,
     })
+  } catch (err) {
+    console.error(err)
   }
 }
 
-export const deleteForm = (req, res) => {
+export const getForm = async (req, res) => {
   const { formId } = req.params
-  console.log(formId)
 
-  form = form.filter((item) => item.id !== formId)
+  try {
+    const form = await Form.findById(formId)
+    if(!form) {
+      throw Error(404, "Could not find the form.")
+    }
 
-  res.status(204).json({ message: 'The Form has been added', form })
+    res.status(200).json({ message: "Form Fetched", form})
+  } catch (err) {
+    console.error(err)
+  }
 }
+
+export const postForm = async (req, res) => {
+  const { 
+    fechaDeUso,
+    horaInicio,
+    horaFinal,
+    asignatura,
+    curso,
+    telefono,
+    matriculaEstudiante,
+    codigoDocente,
+  } = req.body
+
+  const form = new Post({
+    fechaDeUso,
+    horaInicio,
+    horaFinal,
+    asignatura,
+    curso,
+    telefono,
+    codigoDocente,
+    matriculaEstudiante,
+  })
+
+  try {
+    await form.save()
+
+    res.status(201).json({
+      message: 'Post has been created!',
+      form,
+    })
+  } catch (err) {
+    console.error(err)
+  }
+}
+
+export const updateForm = async (req, res) => {
+  const { formId } = req.params
+  const { 
+    fechaDeUso,
+    horaInicio,
+    horaFinal,
+    asignatura,
+    curso,
+    telefono,
+    codigoDocente,
+    matriculaEstudiante,
+  } = req.body
+
+  try {
+    const form = await Form.findById(formId)
+    if (!form) {
+      throw handleError(404, 'Could not find post.')
+    }
+
+    form.fechaDeUso = fechaDeUso
+    form.horaInicio = horaInicio
+    form.horaFinal = horaFinal
+    form.asignatura = asignatura
+    form.curso = curso
+    form.telefono = telefono
+    form.codigoDocente = codigoDocente
+    form.matriculaEstudiante = matriculaEstudiante
+
+    const savedForm = await form.save()
+
+    res.status(200).json({ message: 'The form has been updated!', form: savedForm })
+  } catch (err) {
+    console.error(err)
+  }
+}
+
+export const deleteForm = async (req, res) => {
+  const { formId} = req.params
+
+  try {
+    const form = await Form.findById(formId)
+    if(!form) {
+      throw handleError(404, 'Could not find the form.')
+    }
+
+    await Form.findByIdAndRemove(postId)
+
+    res.status(200).json({ message: 'The form has been deleted.' })
+  } catch(err) {
+    console.error(err)
+  }
+}
+
