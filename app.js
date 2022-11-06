@@ -2,6 +2,7 @@ import * as dotenv from 'dotenv'
 dotenv.config()
 
 import express, { json, urlencoded } from 'express'
+import mongoose from 'mongoose'
 
 import formRouter from './routes/form.js'
 
