@@ -1,20 +1,5 @@
 import Form from '../models/solicitud.js'
 
-// Example Data
-// let form = [
-//   {
-//     id: '1',
-//     fechaDeUso: '2022-10-05',
-//     horaInicio: '22:22',
-//     horaFinal: '22:22',
-//     asignatura: 'aTesting',
-//     curso: 'A101',
-//     telefono: "8091112222",
-//     matriculaEstudiante: '2190001',
-//     codigoDocente: '1112223',
-//   },
-// ]
-
 export const getForms = async (_, res) => {
   try {
     const totalItems = await Form.find().countDocuments()
@@ -42,18 +27,18 @@ export const getForm = async (req, res) => {
 
   try {
     const form = await Form.findById(formId)
-    if(!form) {
-      throw Error(404, "Could not find the form.")
+    if (!form) {
+      throw Error(404, 'Could not find the form.')
     }
 
-    res.status(200).json({ message: "Form Fetched", form})
+    res.status(200).json({ message: 'Form Fetched', form })
   } catch (err) {
     console.error(err)
   }
 }
 
 export const postForm = async (req, res) => {
-  const { 
+  const {
     fechaDeUso,
     horaInicio,
     horaFinal,
@@ -64,7 +49,7 @@ export const postForm = async (req, res) => {
     codigoDocente,
   } = req.body
 
-  const form = new Post({
+  const form = new Form({
     fechaDeUso,
     horaInicio,
     horaFinal,
@@ -79,7 +64,7 @@ export const postForm = async (req, res) => {
     await form.save()
 
     res.status(201).json({
-      message: 'Post has been created!',
+      message: 'Form has been created!',
       form,
     })
   } catch (err) {
@@ -89,7 +74,7 @@ export const postForm = async (req, res) => {
 
 export const updateForm = async (req, res) => {
   const { formId } = req.params
-  const { 
+  const {
     fechaDeUso,
     horaInicio,
     horaFinal,
@@ -117,26 +102,27 @@ export const updateForm = async (req, res) => {
 
     const savedForm = await form.save()
 
-    res.status(200).json({ message: 'The form has been updated!', form: savedForm })
+    res
+      .status(200)
+      .json({ message: 'The form has been updated!', form: savedForm })
   } catch (err) {
     console.error(err)
   }
 }
 
 export const deleteForm = async (req, res) => {
-  const { formId} = req.params
+  const { formId } = req.params
 
   try {
     const form = await Form.findById(formId)
-    if(!form) {
+    if (!form) {
       throw handleError(404, 'Could not find the form.')
     }
 
-    await Form.findByIdAndRemove(postId)
+    await Form.findByIdAndRemove(formId)
 
     res.status(200).json({ message: 'The form has been deleted.' })
-  } catch(err) {
+  } catch (err) {
     console.error(err)
   }
 }
-
