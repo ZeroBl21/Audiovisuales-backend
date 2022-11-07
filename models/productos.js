@@ -1,6 +1,6 @@
 import mongoose, { Schema } from 'mongoose'
 
-const inventorySchema = new Schema({
+const productsSchema = new Schema({
   nombre: {
     type: String,
     require: true,
@@ -15,4 +15,4 @@ const inventorySchema = new Schema({
   }
 })
 
-export default mongoose.model("Inventario", inventorySchema)
+export default mongoose.model("Inventario", productsSchema)
