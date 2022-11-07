@@ -16,6 +16,16 @@ app.use(json())
 app.use('/api', formRouter)
 app.use('/api', assistantRouter)
 
+// Error Handling
+app.use((error, _req, res, _next) => {
+  console.error(error)
+  const status = error.statusCode || 500
+  const message = error.message
+  const data = error.data
+
+  res.status(status).json({ message, data })
+})
+
 mongoose
   .connect(process.env.MONGODB_URI)
   .then(() => {
