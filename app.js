@@ -7,6 +7,7 @@ import mongoose from 'mongoose'
 import formRouter from './routes/form.js'
 import assistantRouter from './routes/assistants.js'
 import teacherRouter from './routes/teachers.js'
+import studentRouter from './routes/students.js'
 
 const app = express()
 const port = process.env.PORT || 8080
@@ -17,6 +18,7 @@ app.use(json())
 app.use('/api', formRouter)
 app.use('/api', assistantRouter)
 app.use('/api', teacherRouter)
+app.use('/api', studentRouter)
 
 // Error Handling
 app.use((error, _req, res, _next) => {
