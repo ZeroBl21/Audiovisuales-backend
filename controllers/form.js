@@ -1,6 +1,7 @@
 import Form from '../models/solicitud.js'
+import { handleError, handlePromiseError } from '../utils/error.js'
 
-export const getForms = async (_, res) => {
+export const getForms = async (_, res, next) => {
   try {
     const totalItems = await Form.find().countDocuments()
     const forms = await Form.find()
@@ -18,11 +19,11 @@ export const getForms = async (_, res) => {
       totalItems,
     })
   } catch (err) {
-    console.error(err)
+    handlePromiseError(err, next)
   }
 }
 
-export const getForm = async (req, res) => {
+export const getForm = async (req, res, next) => {
   const { formId } = req.params
 
   try {
@@ -33,11 +34,11 @@ export const getForm = async (req, res) => {
 
     res.status(200).json({ message: 'Form Fetched', form })
   } catch (err) {
-    console.error(err)
+    handlePromiseError(err, next)
   }
 }
 
-export const postForm = async (req, res) => {
+export const postForm = async (req, res, next) => {
   const {
     fechaDeUso,
     horaInicio,
@@ -49,31 +50,31 @@ export const postForm = async (req, res) => {
     codigoDocente,
   } = req.body
 
-  if (
-    !fechaDeUso ||
-    !horaInicio ||
-    !horaFinal ||
-    !asignatura ||
-    !curso ||
-    !telefono ||
-    !matriculaEstudiante ||
-    !codigoDocente
-  ) {
-    throw handleError(422, 'Validation Failed, data is incorrect')
-  }
-
-  const form = new Form({
-    fechaDeUso,
-    horaInicio,
-    horaFinal,
-    asignatura,
-    curso,
-    telefono,
-    codigoDocente,
-    matriculaEstudiante,
-  })
-
   try {
+    if (
+      !fechaDeUso ||
+      !horaInicio ||
+      !horaFinal ||
+      !asignatura ||
+      !curso ||
+      !telefono ||
+      !matriculaEstudiante ||
+      !codigoDocente
+    ) {
+      throw handleError(422, 'Validation Failed, data is incorrect')
+    }
+
+    const form = new Form({
+      fechaDeUso,
+      horaInicio,
+      horaFinal,
+      asignatura,
+      curso,
+      telefono,
+      codigoDocente,
+      matriculaEstudiante,
+    })
+
     await form.save()
 
     res.status(201).json({
@@ -81,11 +82,11 @@ export const postForm = async (req, res) => {
       form,
     })
   } catch (err) {
-    console.error(err)
+    handlePromiseError(err, next)
   }
 }
 
-export const updateForm = async (req, res) => {
+export const updateForm = async (req, res, next) => {
   const { formId } = req.params
   const {
     fechaDeUso,
@@ -98,20 +99,19 @@ export const updateForm = async (req, res) => {
     matriculaEstudiante,
   } = req.body
 
-  if (
-    !fechaDeUso ||
-    !horaInicio ||
-    !horaFinal ||
-    !asignatura ||
-    !curso ||
-    !telefono ||
-    !matriculaEstudiante ||
-    !codigoDocente
-  ) {
-    throw handleError(422, 'Validation Failed, data is incorrect')
-  }
-
   try {
+    if (
+      !fechaDeUso ||
+      !horaInicio ||
+      !horaFinal ||
+      !asignatura ||
+      !curso ||
+      !telefono ||
+      !matriculaEstudiante ||
+      !codigoDocente
+    ) {
+      throw handleError(422, 'Validation Failed, data is incorrect')
+    }
     const form = await Form.findById(formId)
     if (!form) {
       throw handleError(404, 'Could not find post.')
@@ -132,11 +132,11 @@ export const updateForm = async (req, res) => {
       .status(200)
       .json({ message: 'The form has been updated!', form: savedForm })
   } catch (err) {
-    console.error(err)
+    handlePromiseError(err, next)
   }
 }
 
-export const deleteForm = async (req, res) => {
+export const deleteForm = async (req, res, next) => {
   const { formId } = req.params
 
   try {
@@ -149,6 +149,6 @@ export const deleteForm = async (req, res) => {
 
     res.status(200).json({ message: 'The form has been deleted.' })
   } catch (err) {
-    console.error(err)
+    handlePromiseError(err, next)
   }
 }

@@ -1,7 +1,7 @@
 import Student from '../models/estudiantes.js'
-import { handleError } from '../utils/error.js'
+import { handleError, handlePromiseError } from '../utils/error.js'
 
-export const getStudents = async (_, res) => {
+export const getStudents = async (_, res, next) => {
   try {
     const totalItems = await Student.find().countDocuments()
     const students = await Student.find().sort({ createdAt: -1 })
@@ -16,35 +16,36 @@ export const getStudents = async (_, res) => {
       totalItems,
     })
   } catch (err) {
-    console.error(err)
+    handlePromiseError(err, next)
   }
 }
 
-export const getStudent = async (req, res) => {
+export const getStudent = async (req, res, next) => {
   const { id } = req.params
 
   try {
     const student = await Student.findById(id)
+
     if (!student) {
       throw Error(404, 'Could not find the student.')
     }
 
     res.status(200).json({ message: 'student Fetched', teacher })
   } catch (err) {
-    console.error(err)
+    handlePromiseError(err, next)
   }
 }
 
-export const postStudent = async (req, res) => {
+export const postStudent = async (req, res, next) => {
   const { matricula, nombre, correo } = req.body
 
-  if (!matricula || !nombre || !correo) {
-    throw handleError(422, 'Validation Failed, data is incorrect')
-  }
-
-  const student = new Student({ matricula, nombre, correo })
-
   try {
+    if (!matricula || !nombre || !correo) {
+      throw handleError(422, 'Validation Failed, data is incorrect')
+    }
+
+    const student = new Student({ matricula, nombre, correo })
+
     await student.save()
 
     res.status(201).json({
@@ -52,19 +53,19 @@ export const postStudent = async (req, res) => {
       student,
     })
   } catch (err) {
-    console.error(err)
+    handlePromiseError(err, next)
   }
 }
 
-export const updateStudent = async (req, res) => {
+export const updateStudent = async (req, res, next) => {
   const { id } = req.params
   const { matricula, nombre, correo } = req.body
 
-  if (!matricula || !nombre || !correo) {
-    throw handleError(422, 'Validation Failed, data is incorrect')
-  }
-
   try {
+    if (!matricula || !nombre || !correo) {
+      throw handleError(422, 'Validation Failed, data is incorrect')
+    }
+
     const student = await Student.findById(id)
     if (!student) {
       throw handleError(404, 'Could not find the student.')
@@ -80,11 +81,11 @@ export const updateStudent = async (req, res) => {
       student: savedStudent,
     })
   } catch (err) {
-    console.error(err)
+    handlePromiseError(err, next)
   }
 }
 
-export const deleteStudent = async (req, res) => {
+export const deleteStudent = async (req, res, next) => {
   const { id } = req.params
 
   try {
@@ -97,6 +98,6 @@ export const deleteStudent = async (req, res) => {
 
     res.status(200).json({ message: 'The student has been deleted.' })
   } catch (err) {
-    console.error(err)
+    handlePromiseError(err, next)
   }
 }

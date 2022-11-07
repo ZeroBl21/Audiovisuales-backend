@@ -1,6 +1,7 @@
 import Teacher from '../models/docentes.js'
+import { handleError, handlePromiseError } from '../utils/error.js'
 
-export const getTeachers = async (_, res) => {
+export const getTeachers = async (_, res, next) => {
   try {
     const totalItems = await Teacher.find().countDocuments()
     const teachers = await Teacher.find().sort({ createdAt: -1 })
@@ -15,11 +16,11 @@ export const getTeachers = async (_, res) => {
       totalItems,
     })
   } catch (err) {
-    console.error(err)
+    handlePromiseError(err, next)
   }
 }
 
-export const getTeacher = async (req, res) => {
+export const getTeacher = async (req, res, next) => {
   const { id } = req.params
 
   try {
@@ -30,40 +31,39 @@ export const getTeacher = async (req, res) => {
 
     res.status(200).json({ message: 'Teacher Fetched', teacher })
   } catch (err) {
-    console.error(err)
+    handlePromiseError(err, next)
   }
 }
 
-export const postTeacher = async (req, res) => {
+export const postTeacher = async (req, res, next) => {
   const { codigo, nombre } = req.body
 
-  if (!nombre || !codigo) {
-    throw handleError(422, 'Validation Failed, data is incorrect')
-  }
-
-  const teacher = new Teacher({ codigo, nombre })
-
   try {
+    if (!nombre || !codigo) {
+      throw handleError(422, 'Validation Failed, data is incorrect')
+    }
+
+    const teacher = new Teacher({ codigo, nombre })
     await teacher.save()
 
     res.status(201).json({
       message: 'teacher has been created!',
-      teacher
+      teacher,
     })
   } catch (err) {
-    console.error(err)
+    handlePromiseError(err, next)
   }
 }
 
-export const updateTeacher = async (req, res) => {
+export const updateTeacher = async (req, res, next) => {
   const { id } = req.params
   const { codigo, nombre } = req.body
 
-  if (!codigo || !nombre) {
-    throw handleError(422, 'Validation Failed, data is incorrect')
-  }
-
   try {
+    if (!codigo || !nombre) {
+      throw handleError(422, 'Validation Failed, data is incorrect')
+    }
+
     const teacher = await Teacher.findById(id)
     if (!teacher) {
       throw handleError(404, 'Could not find the teacher.')
@@ -78,11 +78,11 @@ export const updateTeacher = async (req, res) => {
       teacher: savedTeacher,
     })
   } catch (err) {
-    console.error(err)
+    handlePromiseError(err, next)
   }
 }
 
-export const deleteTeacher = async (req, res) => {
+export const deleteTeacher = async (req, res, next) => {
   const { id } = req.params
 
   try {
@@ -95,6 +95,6 @@ export const deleteTeacher = async (req, res) => {
 
     res.status(200).json({ message: 'The teacher has been deleted.' })
   } catch (err) {
-    console.error(err)
+    handlePromiseError(err, next)
   }
 }

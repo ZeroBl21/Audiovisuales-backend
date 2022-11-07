@@ -1,6 +1,7 @@
 import Assistant from '../models/auxiliares.js'
+import { handleError, handlePromiseError } from '../utils/error.js'
 
-export const getAssistants = async (_, res) => {
+export const getAssistants = async (_, res, next) => {
   try {
     const totalItems = await Assistant.find().countDocuments()
     const assistants = await Assistant.find().sort({ createdAt: -1 })
@@ -15,35 +16,36 @@ export const getAssistants = async (_, res) => {
       totalItems,
     })
   } catch (err) {
-    console.error(err)
+    handlePromiseError(err, next)
   }
 }
 
-export const getAssistant = async (req, res) => {
+export const getAssistant = async (req, res, next) => {
   const { assistantId } = req.params
 
   try {
     const assistant = await Assistant.findById(assistantId)
+
     if (!assistant) {
       throw Error(404, 'Could not find the assistant.')
     }
 
     res.status(200).json({ message: 'Assistant Fetched', assistant })
   } catch (err) {
-    console.error(err)
+    handlePromiseError(err, next)
   }
 }
 
-export const postAssistant = async (req, res) => {
+export const postAssistant = async (req, res, next) => {
   const { nombre } = req.body
 
-  if (!nombre) {
-    throw handleError(422, 'Validation Failed, data is incorrect')
-  }
-
-  const assistant = new Assistant({ nombre })
-
   try {
+    if (!nombre) {
+      throw handleError(422, 'Validation Failed, data is incorrect')
+    }
+
+    const assistant = new Assistant({ nombre })
+
     await assistant.save()
 
     res.status(201).json({
@@ -51,19 +53,19 @@ export const postAssistant = async (req, res) => {
       assistant,
     })
   } catch (err) {
-    console.error(err)
+    handlePromiseError(err, next)
   }
 }
 
-export const updateAssistant = async (req, res) => {
+export const updateAssistant = async (req, res, next) => {
   const { assistantId } = req.params
   const { nombre } = req.body
 
-  if (!nombre) {
-    throw handleError(422, 'Validation Failed, data is incorrect')
-  }
-
   try {
+    if (!nombre) {
+      throw handleError(422, 'Validation Failed, data is incorrect')
+    }
+
     const assistant = await Assistant.findById(assistantId)
     if (!assistant) {
       throw handleError(404, 'Could not find the assistant.')
@@ -77,11 +79,11 @@ export const updateAssistant = async (req, res) => {
       assistant: savedForm,
     })
   } catch (err) {
-    console.error(err)
+    handlePromiseError(err, next)
   }
 }
 
-export const deleteAssistant = async (req, res) => {
+export const deleteAssistant = async (req, res, next) => {
   const { assistantId } = req.params
 
   try {
@@ -94,6 +96,6 @@ export const deleteAssistant = async (req, res) => {
 
     res.status(200).json({ message: 'The assistant has been deleted.' })
   } catch (err) {
-    console.error(err)
+    handlePromiseError(err, next)
   }
 }
