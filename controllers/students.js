@@ -30,7 +30,7 @@ export const getStudent = async (req, res, next) => {
       throw Error(404, 'Could not find the student.')
     }
 
-    res.status(200).json({ message: 'student Fetched', teacher })
+    res.status(200).json({ message: 'student Fetched', student })
   } catch (err) {
     handlePromiseError(err, next)
   }
