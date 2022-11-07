@@ -49,6 +49,19 @@ export const postForm = async (req, res) => {
     codigoDocente,
   } = req.body
 
+  if (
+    !fechaDeUso ||
+    !horaInicio ||
+    !horaFinal ||
+    !asignatura ||
+    !curso ||
+    !telefono ||
+    !matriculaEstudiante ||
+    !codigoDocente
+  ) {
+    throw handleError(422, 'Validation Failed, data is incorrect')
+  }
+
   const form = new Form({
     fechaDeUso,
     horaInicio,
@@ -84,6 +97,19 @@ export const updateForm = async (req, res) => {
     codigoDocente,
     matriculaEstudiante,
   } = req.body
+
+  if (
+    !fechaDeUso ||
+    !horaInicio ||
+    !horaFinal ||
+    !asignatura ||
+    !curso ||
+    !telefono ||
+    !matriculaEstudiante ||
+    !codigoDocente
+  ) {
+    throw handleError(422, 'Validation Failed, data is incorrect')
+  }
 
   try {
     const form = await Form.findById(formId)
