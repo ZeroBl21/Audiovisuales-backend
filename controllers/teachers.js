@@ -6,11 +6,11 @@ export const getTeachers = async (_, res) => {
     const teachers = await Teacher.find().sort({ createdAt: -1 })
 
     if (!teachers) {
-      throw handleError(404, 'Error fetching the assistants')
+      throw handleError(404, 'Error fetching the teachers')
     }
 
     res.status(200).json({
-      message: 'Fetched assistants successfully',
+      message: 'Fetched teachers successfully',
       teacher: teachers,
       totalItems,
     })
@@ -25,7 +25,7 @@ export const getTeacher = async (req, res) => {
   try {
     const teacher = await Teacher.findById(id)
     if (!teacher) {
-      throw Error(404, 'Could not find the assistant.')
+      throw Error(404, 'Could not find the teacher.')
     }
 
     res.status(200).json({ message: 'Teacher Fetched', teacher })
@@ -41,7 +41,7 @@ export const postTeacher = async (req, res) => {
     throw handleError(422, 'Validation Failed, data is incorrect')
   }
 
-  const teacher = new Teacher({ nombre })
+  const teacher = new Teacher({ codigo, nombre })
 
   try {
     await teacher.save()
@@ -88,7 +88,7 @@ export const deleteTeacher = async (req, res) => {
   try {
     const teacher = await Teacher.findById(id)
     if (!teacher) {
-      throw handleError(404, 'Could not find the assistant.')
+      throw handleError(404, 'Could not find the teacher.')
     }
 
     await Teacher.findByIdAndRemove(id)
