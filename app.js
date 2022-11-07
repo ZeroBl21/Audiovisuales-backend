@@ -5,6 +5,7 @@ import express, { json, urlencoded } from 'express'
 import mongoose from 'mongoose'
 
 import formRouter from './routes/form.js'
+import assistantRouter from './routes/assistants.js'
 
 const app = express()
 const port = process.env.PORT || 8080
@@ -13,6 +14,7 @@ app.use(urlencoded({ extended: false }))
 app.use(json())
 
 app.use('/api', formRouter)
+app.use('/api', assistantRouter)
 
 mongoose
   .connect(process.env.MONGODB_URI)
