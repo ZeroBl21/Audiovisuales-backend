@@ -3,7 +3,7 @@ import mongoose, { Schema } from 'mongoose'
 const reservationSchema = new Schema({
   idForm: {
     type: Schema.Types.ObjectId,
-    ref: 'Form',
+    ref: 'Solicitudes',
     required: true,
   },
   idAuxiliar: {

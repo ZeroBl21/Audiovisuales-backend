@@ -25,11 +25,11 @@ const formSchema = new Schema({
     type: String,
     required: true,
   },
-  codigoDocente: {
+  idDocente: {
     type: String,
     ref: "Docentes"
   },
-  matriculaEstudiante: {
+  idEstudiante: {
     type: String,
     ref: "Estudiantes"
   }
