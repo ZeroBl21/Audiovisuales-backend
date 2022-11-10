@@ -18,7 +18,7 @@ const reservationSchema = new Schema({
   equipos: [
     {
       type: Schema.Types.ObjectId,
-      ref: 'Equipos',
+      ref: 'Inventario',
     },
   ],
 })
