@@ -5,6 +5,10 @@ const assistantSchema = new Schema({
     type: String,
     require: true,
   },
+  idAuxiliar: {
+    type: String,
+    require: true,
+  },
   estado: {
     type: Boolean,
     default: false
