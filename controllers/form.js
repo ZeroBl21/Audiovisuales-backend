@@ -78,12 +78,12 @@ export const postForm = async (req, res, next) => {
 
     const teacher = await Teacher.findOne({ codigo: codigoDocente })
     if (!teacher) {
-      throw handleError(404, 'Invalid teacher')
+      // throw handleError(404, 'Invalid teacher')
     }
 
     const student = await Student.findOne({ matricula: matriculaEstudiante })
     if (!student) {
-      throw handleError(404, 'Invalid student')
+      // throw handleError(404, 'Invalid student')
     }
 
     const form = new Form({
@@ -93,8 +93,8 @@ export const postForm = async (req, res, next) => {
       asignatura,
       curso,
       telefono,
-      idDocente: teacher._id,
-      idEstudiante: student._id,
+      // idDocente: teacher._id,
+      // idEstudiante: student._id,
     })
 
     // Create Revervation
@@ -181,8 +181,8 @@ export const updateForm = async (req, res, next) => {
     form.asignatura = asignatura
     form.curso = curso
     form.telefono = telefono
-    form.idDocente = teacher._id
-    form.idEstudiante = student._id
+    // form.idDocente = teacher._id
+    // form.idEstudiante = student._id
     form.equipos = equipos
 
     const savedForm = await form.save()
