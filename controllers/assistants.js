@@ -59,7 +59,7 @@ export const postAssistant = async (req, res, next) => {
 
 export const updateAssistant = async (req, res, next) => {
   const { assistantId } = req.params
-  const { nombre } = req.body
+  const { nombre, estado } = req.body
 
   try {
     if (!nombre) {
@@ -72,6 +72,8 @@ export const updateAssistant = async (req, res, next) => {
     }
 
     assistant.nombre = nombre
+    assistant.estado = estado
+
     const savedForm = await assistant.save()
 
     res.status(200).json({
