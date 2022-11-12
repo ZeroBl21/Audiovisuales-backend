@@ -1,4 +1,7 @@
 import Reservation from '../models/reservas.js'
+import Form from '../models/solicitud.js'
+import Assistant from '../models/auxiliares.js'
+import Product from '../models/productos.js'
 import { handleError, handlePromiseError } from '../utils/error.js'
 
 export const getReservations = async (_, res, next) => {
@@ -33,7 +36,7 @@ export const getReservation = async (req, res, next) => {
       .sort({ createdAt: -1 })
 
     if (!reservation) {
-      throw Error(404, 'Could not find the reservation.')
+      throw handleError(404, 'Could not find the reservation.')
     }
 
     res.status(200).json({ message: 'reservation Fetched', reservation })
@@ -43,13 +46,120 @@ export const getReservation = async (req, res, next) => {
 }
 
 export const postReservation = async (req, res, next) => {
-  // TODO
+  const { idForm, idAuxiliar, estado, equipos } = req.body
+  let assistant
+
+  try {
+    if (!idForm || !equipos) {
+      throw handleError(422, 'Validation Failed, data is incorrect')
+    }
+
+    const form = await Form.findById(idForm)
+    if (!form) {
+      throw handleError(404, 'Invalid form')
+    }
+
+    if (idAuxiliar) {
+      assistant = await Assistant.findById(idAuxiliar)
+      if (!assistant) {
+        throw handleError(404, 'Invalid assistant')
+      }
+    }
+
+    const reservation = new Reservation({
+      idForm: form._id,
+      equipos,
+      estado: estado ? estado : false,
+      idAuxiliar: assistant ? assistant?._id : null,
+    })
+
+    reservation.save()
+
+    res.status(201).json({
+      message: 'reservation has been created!',
+      reservation,
+    })
+  } catch (err) {
+    handlePromiseError(err, next)
+  }
 }
 
 export const updateReservation = async (req, res, next) => {
-  // TODO
+  const { id } = req.params
+  const { idForm, idAuxiliar, equipos } = req.body
+  const estado = req.body.estado || false
+  let assistant
+
+  try {
+    if (!idForm || !equipos) {
+      throw handleError(422, 'Validation Failed, data is incorrect')
+    }
+
+    const reservation = await Reservation.findById(id)
+    if (!reservation) {
+      throw handleError(404, 'Could not find the reservation.')
+    }
+
+    const form = await Form.findById(idForm)
+    if (!form) {
+      throw handleError(404, 'Could not find form.')
+    }
+
+    if (idAuxiliar) {
+      assistant = await Assistant.findById(idAuxiliar)
+      if (!assistant) {
+        throw handleError(404, 'Could not find the assistant.')
+      }
+    }
+
+    reservation.idForm = form._id
+    reservation.idAuxiliar = assistant ? assistant?._id : null
+    reservation.equipos = equipos
+
+    if (reservation.estado !== estado) {
+      for (const item of reservation.equipos) {
+        await Product.findByIdAndUpdate(item, {
+          $inc: { stock: estado ? 1 : -1 },
+        })
+      }
+    }
+
+    reservation.estado = estado
+
+    const savedReservation = await reservation.save()
+
+    res.status(200).json({
+      message: 'The reservation has been updated!',
+      reservation: savedReservation,
+    })
+  } catch (err) {
+    handlePromiseError(err, next)
+  }
 }
 
 export const deleteReservation = async (req, res, next) => {
-  // TODO
+  const { id } = req.params
+
+  try {
+    const reservation = await Reservation.findById(id)
+    if (!reservation) {
+      throw handleError(404, 'Could not find the reservation.')
+    }
+
+    const form = await Form.findById(reservation.idForm)
+    if (!form) {
+      throw handleError(404, 'Could not find the form.')
+    }
+
+    for (const item of reservation.equipos) {
+      await Product.findByIdAndUpdate(item, { $inc: { stock: 1 } })
+    }
+
+    await Form.findByIdAndRemove(form._id)
+    await Reservation.findOneAndRemove(id)
+
+    res.status(200).json({ message: 'The reservation has been deleted.' })
+  } catch (err) {
+    handlePromiseError(err, next)
+  }
 }
