@@ -7,6 +7,7 @@ specifiers:
   express: ^4.18.2
   express-validator: ^6.14.2
   jsonwebtoken: ^8.5.1
+  moment: ^2.29.4
   mongoose: ^6.7.1
   nodemon: ^2.0.20
 
@@ -16,6 +17,7 @@ dependencies:
   express: 4.18.2
   express-validator: 6.14.2
   jsonwebtoken: 8.5.1
+  moment: 2.29.4
   mongoose: 6.7.1
 
 devDependencies:
@@ -1334,6 +1336,10 @@ packages:
     dependencies:
       brace-expansion: 1.1.11
     dev: true
+
+  /moment/2.29.4:
+    resolution: {integrity: sha512-5LC9SOxjSc2HF6vO2CyuTDNivEdoz2IvyJJGj6X8DJ0eFyfszE0QiEd+iXmBvUP3WHxSjFH/vIsA0EN00cgr8w==}
+    dev: false
 
   /mongodb-connection-string-url/2.5.4:
     resolution: {integrity: sha512-SeAxuWs0ez3iI3vvmLk/j2y+zHwigTDKQhtdxTgt5ZCOQQS5+HW4g45/Xw5vzzbn7oQXCNQ24Z40AkJsizEy7w==}
