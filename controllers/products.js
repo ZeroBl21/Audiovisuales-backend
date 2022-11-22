@@ -40,12 +40,17 @@ export const postProduct = async (req, res, next) => {
   const { nombre, tipo, stock } = req.body
 
   try {
-    if (!nombre || !tipo || stock) {
+    if (!nombre || !tipo || !stock) {
       throw handleError(422, 'Validation Failed, data is incorrect')
     }
 
     const product = new Product({ nombre, tipo, stock })
     await product.save()
+
+    // const findSameProduct = Product.findOne(res => res.nombre === nombre);
+
+    // if (findSameProduct) res.json('hay uno igual')
+    // else res.json('no ay igual')
 
     res.status(201).json({
       message: 'Product has been created!',

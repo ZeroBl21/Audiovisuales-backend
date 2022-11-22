@@ -1,14 +1,15 @@
-import { Router } from 'express'
+import { Router } from 'express';
 
-import * as reservationController from '../controllers/reservations.js'
+import * as reservationController from '../controllers/reservations.js';
 
-const router = Router()
+const router = Router();
 
 router
   .get('/reservations', reservationController.getReservations)
+  .get(`/reservations/today`, reservationController.getReservationsOfToday)
   .get('/reservations/:id', reservationController.getReservation)
   .post('/reservations', reservationController.postReservation)
   .put('/reservations/:id', reservationController.updateReservation)
-  .delete('/reservations/:id', reservationController.deleteReservation)
+  .delete('/reservations/:id', reservationController.deleteReservation);
 
-export default router
+export default router;

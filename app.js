@@ -10,6 +10,7 @@ import teacherRouter from './routes/teachers.js'
 import studentRouter from './routes/students.js'
 import productRouter from './routes/products.js'
 import reservationRouter from './routes/reservations.js'
+import usuarioRouter from './routes/usuarioRouter.js'
 
 const app = express()
 const port = process.env.PORT || 8080
@@ -38,6 +39,7 @@ app.use('/api', teacherRouter)
 app.use('/api', studentRouter)
 app.use('/api', productRouter)
 app.use('/api', reservationRouter)
+app.use('/api', usuarioRouter)
 
 // Error Handling
 app.use((error, _req, res, _next) => {
@@ -56,6 +58,6 @@ mongoose
       console.log('http://localhost:8080')
     })
   })
-  .catch(() => {
+  .catch((err) => {
     console.error(err)
   })

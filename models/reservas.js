@@ -1,4 +1,4 @@
-import mongoose, { Schema } from 'mongoose'
+import mongoose, { Schema } from 'mongoose';
 
 const reservationSchema = new Schema({
   idForm: {
@@ -21,6 +21,12 @@ const reservationSchema = new Schema({
       ref: 'Inventario',
     },
   ],
-})
+  rol: {
+    type: String,
+    enum: ['en proceso', 'terminado'],
+    required: true,
+    default: 'en proceso',
+  },
+});
 
-export default mongoose.model('Reservas', reservationSchema)
+export default mongoose.model('Reservas', reservationSchema);

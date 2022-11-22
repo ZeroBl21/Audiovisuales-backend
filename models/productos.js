@@ -7,6 +7,7 @@ const productsSchema = new Schema({
   },
   tipo: {
     type: String,
+    enum: ['laptop', 'sonido', 'proyector'],
     default: "proyector"
   },
   stock: {

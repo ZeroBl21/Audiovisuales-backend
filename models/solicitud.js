@@ -32,6 +32,9 @@ const formSchema = new Schema({
   idEstudiante: {
     type: String,
     ref: "Estudiantes"
+  },
+  rol: {
+    type: String,
   }
 })
 
