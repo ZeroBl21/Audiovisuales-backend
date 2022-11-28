@@ -2,7 +2,7 @@ import mongoose, { Schema } from 'mongoose'
 
 const formSchema = new Schema({
   fechaDeUso: {
-    type: String,
+    type: Date,
     required: true,
   },
   horaInicio: {
