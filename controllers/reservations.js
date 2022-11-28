@@ -5,12 +5,16 @@ import Product from '../models/productos.js'
 import { handleError, handlePromiseError } from '../utils/error.js'
 
 export const getReservationsOfToday = async (_, res) => {
-  const date = new Date()
+  const date = new Date('2022-11-29')
   const today = date.toISOString().split('T')[0]
+  // const today = ""
 
   try {
     const reservations = await Reservation.find()
-      .populate({ path: 'idForm', match: { fechaDeUso: today } })
+      .populate({
+        path: 'idForm',
+        match: { fechaDeUso: { $lt: '9999-12-12' } },
+      })
       .populate('equipos')
       .sort({ createdAt: -1 })
     const data = reservations.filter((item) => item.idForm)
@@ -24,22 +28,30 @@ export const getReservationsOfToday = async (_, res) => {
   }
 }
 
-export const getReservations = async (_, res, next) => {
+export const getReservations = async (req, res, next) => {
+  const {
+    inicio = new Date('0000-1-1').toISOString(),
+    final = new Date('9999-12-12').toISOString(),
+  } = req.query
+
   try {
-    const totalItems = await Reservation.find().countDocuments()
     const reservations = await Reservation.find()
-      .populate('idForm')
+      .populate({
+        path: 'idForm',
+        match: { fechaDeUso: { $lte: final, $gte: inicio } },
+      })
       .populate('equipos')
       .sort({ createdAt: -1 })
 
     if (!reservations) {
       throw handleError(404, 'Error fetching the reservation')
     }
+    const data = reservations.filter((item) => item.idForm)
 
     res.status(200).json({
       message: 'Fetched reservations successfully',
-      reservation: reservations,
-      totalItems,
+      reservation: data,
+      totalItems: Object.keys(data).length,
     })
   } catch (err) {
     handlePromiseError(err, next)

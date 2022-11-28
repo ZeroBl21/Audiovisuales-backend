@@ -109,7 +109,7 @@ export const postForm = async (req, res, next) => {
       const product = await Product.findById(id)
 
       if (!product || product?.stock < 1) {
-        throw handleError(404, `The ${item} is missing or out of stock`)
+        throw handleError(404, `The ${product} is missing or out of stock`)
       }
 
       reservation.equipos.push(product)
