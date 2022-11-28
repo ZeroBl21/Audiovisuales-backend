@@ -4,7 +4,7 @@ import Product from '../models/productos.js'
 import Teacher from '../models/docentes.js'
 import Student from '../models/estudiantes.js'
 import { handleError, handlePromiseError } from '../utils/error.js'
-import { sendEmail } from '../utils/email.js'
+// import { sendEmail } from '../utils/email.js'
 
 export const getForms = async (_, res, next) => {
   try {
@@ -108,9 +108,9 @@ export const postForm = async (req, res, next) => {
     for (const id of equipos) {
       const product = await Product.findById(id)
 
-      // if (!product) {
-      //   throw handleError(404, `The ${item} is missing or out of stock`)
-      // }
+      if (!product || product?.stock < 1) {
+        throw handleError(404, `The ${item} is missing or out of stock`)
+      }
 
       reservation.equipos.push(product)
     }
@@ -126,7 +126,7 @@ export const postForm = async (req, res, next) => {
     }
 
     // Send Mail
-    await sendEmail(student?.nombre, student?.correo, reservation._id?.toString())
+    // await sendEmail(student?.nombre, student?.correo, reservation._id?.toString())
 
     res.status(201).json({
       message: 'Form has been created!',
@@ -194,8 +194,8 @@ export const updateForm = async (req, res, next) => {
     form.asignatura = asignatura
     form.curso = curso
     form.telefono = telefono
-    // form.idDocente = teacher._id
-    // form.idEstudiante = student._id
+    form.idDocente = teacher._id
+    form.idEstudiante = student._id
     form.equipos = equipos
     form.rol = rol
 

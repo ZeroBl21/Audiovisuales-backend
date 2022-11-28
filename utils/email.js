@@ -6,7 +6,6 @@ import Sib from 'sib-api-v3-sdk'
 export function sendEmail(targetUser, targetMail, reservationId) {
   const date = new Date()
   const today = date.toISOString().split('T')[0]
-  console.log(targetUser, targetMail, reservationId)
 
   const client = Sib.ApiClient.instance
   const apiKey = client.authentications['api-key']

@@ -14,7 +14,6 @@ export const getReservationsOfToday = async (_, res) => {
       .populate('equipos')
       .sort({ createdAt: -1 })
     const data = reservations.filter((item) => item.idForm)
-    console.log(typeof data)
 
     res.status(200).json({
       reservation: data,
