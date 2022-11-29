@@ -38,8 +38,12 @@ export const getReservations = async (req, res, next) => {
       .populate({
         path: 'idForm',
         match: { fechaDeUso: { $lte: final, $gte: inicio } },
+        populate: {
+          path: 'idEstudiante',
+        },
       })
       .populate('equipos')
+      .populate('idAuxiliar')
       .sort({ createdAt: -1 })
 
     if (!reservations) {
