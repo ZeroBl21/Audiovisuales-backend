@@ -7,13 +7,12 @@ import { handleError, handlePromiseError } from '../utils/error.js'
 export const getReservationsOfToday = async (_, res) => {
   const date = new Date('2022-11-29')
   const today = date.toISOString().split('T')[0]
-  // const today = ""
 
   try {
     const reservations = await Reservation.find()
       .populate({
         path: 'idForm',
-        match: { fechaDeUso: { $lt: '9999-12-12' } },
+        match: { fechaDeUso: today },
       })
       .populate('equipos')
       .sort({ createdAt: -1 })
